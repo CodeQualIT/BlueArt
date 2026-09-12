@@ -1,12 +1,11 @@
 package com.github.cc007.blueart.kolostyles.compiler.font
 
-import com.github.cc007.blueart.kolostyles.compiler.*
+import com.github.cc007.blueart.kolostyles.compiler.StyleParserHook
+import com.github.cc007.blueart.kolostyles.compiler.Token
+import com.github.cc007.blueart.kolostyles.compiler.parseKoloVariants
 import kotlinx.css.FontWeight
 import kotlinx.css.rem
 import org.springframework.stereotype.Component
-
-private val FONT_MEDIA_VARIANTS = KOLO_MEDIA_VARIANT_MIN_WIDTHS
-    .mapValues { (name, value) -> MediaVariant(name, value) }
 
 private val FONT_FAMILY_VALUES: Map<String, String> = linkedMapOf(
     "font-sans" to "var(--font-sans)",
@@ -52,23 +51,13 @@ class FontParserHook : StyleParserHook {
 
         val utility = parts.last()
         val variants = parts.dropLast(1)
-        if (variants.any { it !in KOLO_STATE_VARIANTS && it !in FONT_MEDIA_VARIANTS }) {
-            return null
-        }
-
-        val stateVariants = variants.filter { it in KOLO_STATE_VARIANTS }
-        val mediaVariants = FONT_MEDIA_VARIANTS.filterKeys { it in variants }
-        if (mediaVariants.size > 1) {
-            return null
-        }
-
-        val mediaVariant = mediaVariants.values.firstOrNull()
+        val parsedVariants = parseKoloVariants(variants) ?: return null
 
         FONT_FAMILY_VALUES[utility]?.let { fontFamily ->
             return FontFamilyToken(
                 raw = token,
-                stateVariants = stateVariants,
-                mediaVariant = mediaVariant,
+                stateVariants = parsedVariants.stateVariants,
+                mediaVariant = parsedVariants.mediaVariant,
                 utility = utility,
                 fontFamilyValue = fontFamily,
             )
@@ -77,8 +66,8 @@ class FontParserHook : StyleParserHook {
         FONT_SIZE_VALUES[utility]?.let { fontSize ->
             return FontSizeToken(
                 raw = token,
-                stateVariants = stateVariants,
-                mediaVariant = mediaVariant,
+                stateVariants = parsedVariants.stateVariants,
+                mediaVariant = parsedVariants.mediaVariant,
                 utility = utility,
                 fontSizeValue = fontSize,
             )
@@ -87,8 +76,8 @@ class FontParserHook : StyleParserHook {
         FONT_WEIGHT_VALUES[utility]?.let { fontWeight ->
             return FontWeightToken(
                 raw = token,
-                stateVariants = stateVariants,
-                mediaVariant = mediaVariant,
+                stateVariants = parsedVariants.stateVariants,
+                mediaVariant = parsedVariants.mediaVariant,
                 utility = utility,
                 fontWeightValue = fontWeight,
             )

@@ -19,7 +19,11 @@ fun interface StyleGeneratorHook {
         if (mediaVariant == null) {
             selectorText { declaration() }
         } else {
-            media("(min-width: ${mediaVariant.minWidth})") {
+            val mediaProperty = when (mediaVariant.direction) {
+                MediaVariantDirection.MIN -> "min-width"
+                MediaVariantDirection.MAX -> "max-width"
+            }
+            media("($mediaProperty: ${mediaVariant.boundary})") {
                 selectorText { declaration() }
             }
         }

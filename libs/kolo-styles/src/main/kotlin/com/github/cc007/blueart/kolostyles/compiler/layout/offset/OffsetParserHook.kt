@@ -1,14 +1,15 @@
 package com.github.cc007.blueart.kolostyles.compiler.layout.offset
 
-import com.github.cc007.blueart.kolostyles.compiler.*
+import com.github.cc007.blueart.kolostyles.compiler.MediaVariant
+import com.github.cc007.blueart.kolostyles.compiler.StyleParserHook
+import com.github.cc007.blueart.kolostyles.compiler.Token
+import com.github.cc007.blueart.kolostyles.compiler.parseKoloVariants
 import kotlinx.css.LinearDimension
 import kotlinx.css.pct
 import kotlinx.css.px
 import kotlinx.css.rem
 import org.springframework.stereotype.Component
 
-private val OFFSET_MEDIA_VARIANTS = KOLO_MEDIA_VARIANT_MIN_WIDTHS
-    .mapValues { (name, value) -> MediaVariant(name, value) }
 private val OFFSET_PREFIXES = listOf("inset-x", "inset-y", "inset", "top", "right", "bottom", "left")
 private val FRACTION_TOKEN_PATTERN = Regex("^(\\d+)/(\\d+)$")
 
@@ -40,15 +41,8 @@ class OffsetParserHook : StyleParserHook {
     }
 
     private fun parseVariants(variants: List<String>): Pair<List<String>, MediaVariant?>? {
-        if (variants.any { it !in KOLO_STATE_VARIANTS && it !in OFFSET_MEDIA_VARIANTS }) {
-            return null
-        }
-        val stateVariants = variants.filter { it in KOLO_STATE_VARIANTS }
-        val mediaVariants = OFFSET_MEDIA_VARIANTS.filterKeys { it in variants }
-        if (mediaVariants.size > 1) {
-            return null
-        }
-        return stateVariants to mediaVariants.values.firstOrNull()
+        val parsedVariants = parseKoloVariants(variants) ?: return null
+        return parsedVariants.stateVariants to parsedVariants.mediaVariant
     }
 }
 

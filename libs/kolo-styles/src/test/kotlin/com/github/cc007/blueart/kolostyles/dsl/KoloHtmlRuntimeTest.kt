@@ -510,6 +510,29 @@ class KoloHtmlRuntimeTest {
         extractFirstBodyDivClasses(html) shouldContainExactlyInAnyOrder expectedTokens.map { "k-$it" }
     }
 
+    @Test
+    fun `maximum-width variant helpers preserve canonical nested state tokens`() {
+        val html = renderKoloHtml(version = "abc123") {
+            head { koloStylesheetLink() }
+            body {
+                div {
+                    kolo {
+                        maxSm.p(4)
+                        maxMd.variant("hover").flex
+                        variant("max-md").variant("hover").grid
+                    }
+                }
+            }
+        }
+
+        val expectedTokens = listOf("max-sm:p-4", "max-md:hover:flex", "max-md:hover:grid")
+        val canonicalTokens = canonicalizeKoloTokens(expectedTokens)
+        val expectedHref = "/css/generated/kolo.css?version=abc123&kolo=" + URLEncoder.encode(canonicalTokens, UTF_8)
+
+        extractHeadStylesheetHref(html) shouldBe expectedHref
+        extractFirstBodyDivClasses(html) shouldContainExactlyInAnyOrder expectedTokens.map { "k-$it" }
+    }
+
     private fun extractHeadStylesheetHref(html: String): String {
         val document = Jsoup.parse(html)
         return document.selectFirst("head > link[rel=stylesheet]")

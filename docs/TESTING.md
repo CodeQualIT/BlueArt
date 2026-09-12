@@ -83,6 +83,7 @@ Files:
 - `KoloHtmlRuntimeTest` validates font DSL token/class emission and canonicalized `kolo.css` href output across base + variant scopes.
 - `RichTextFacetRendererTest` validates mention/tag rich-text anchors emit semibold typography through co-located Kolo font utilities in render context.
 - `PlaywrightVisualRegressionTest` in `:visual-tests` validates login, browse timeline card rendering, and art detail rendering in headless Chromium and Firefox against committed per-browser snapshots.
+- `ResponsiveVariantsTest`, `KoloCssControllerTest`, and `KoloHtmlRuntimeTest` validate max-width parser acceptance, exclusive media output, unsupported maximum-variant diagnostics, and DSL token collection; `CssControllerTest` and Playwright boundary assertions retain the 640px, 700px, and 960px page-CSS exceptions.
 
 ## Suggested Additions
 - Lightweight integration tests for `GET /browse` and `GET /art/{cid}` rendering expectations.

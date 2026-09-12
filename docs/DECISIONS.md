@@ -115,3 +115,9 @@ Track technical decisions and rationale in one place. Use this file for concise 
   - Centralize media/state variant selector emission in shared `StyleGeneratorHook` helper and migrate spacing/display/font/sizing/layout generators to the shared path.
   - Migrate mappable browse/art layout ownership to render-site Kolo helpers and keep non-mappable/max-width layout rules in `CssController` as explicit `kolo-exception`s.
 - Consequences: Layout ownership is co-located for migrated selectors, compiler/generator logic has less media-wrapper duplication, and residual page-CSS layout behavior remains auditable until max-width/arbitrary patterns gain utility support.
+
+### D-014: Add directional named Kolo responsive variants
+- Status: accepted
+- Context: Kolo min-width variants could not express responsive utility ownership below a breakpoint.
+- Decision: Share a responsive metadata allow-list across utility parsers, retaining min-width `sm` through `2xl` and adding exclusive max-width `max-sm` through `max-2xl` at fixed Tailwind-compatible boundaries. Keep the legacy 640px, 700px, and 960px page-CSS rules as `kolo-exception`s because no named exclusive range is exactly equivalent.
+- Consequences: All current utility families support the same responsive variants and directional CSS emission, while page CSS remains the authoritative owner of intentionally non-equivalent responsive behavior.

@@ -28,7 +28,7 @@ class KoloCssCompiler(
         val tokens = splitTokens(rawKolo)
         val builder = CssBuilder()
         tokens.forEachIndexed { index, token ->
-            if (isMalformedToken(token)) {
+            if (isMalformedToken(token) || hasUnsupportedMaximumVariant(token)) {
                 builder.appendDiagnostic("unparsed", index, token)
             } else if (!generateViaHooks(token, builder)) {
                 builder.appendDiagnostic("unsupported", index, token)
