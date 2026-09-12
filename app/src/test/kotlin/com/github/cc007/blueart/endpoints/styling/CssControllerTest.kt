@@ -183,6 +183,23 @@ class CssControllerTest {
         clampedText shouldContain "overflow: hidden;"
     }
 
+    @Test
+    fun `stylesheets retain responsive exceptions that Kolo cannot represent exactly`() {
+        val browseCss = controller.browseStylesheet()
+        val artCss = controller.artStylesheet()
+
+        browseCss shouldContain "@media (max-width: 960px)"
+        browseCss shouldContain "grid-template-columns: 1fr;"
+        browseCss shouldContain "position: static;"
+        browseCss shouldContain "@media (max-width: 640px)"
+        browseCss shouldContain "flex-direction: column;"
+        browseCss shouldContain "align-items: flex-start;"
+
+        artCss shouldContain "@media (max-width: 700px)"
+        artCss shouldContain "padding: 0.75rem;"
+        artCss shouldContain "padding: 0.8rem;"
+    }
+
     private fun assertContainsAllRuleHeaders(
         legacyCss: String,
         generatedCss: String,

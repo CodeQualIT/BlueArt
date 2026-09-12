@@ -264,15 +264,17 @@ class CssController {
             raw("transform", "translateY(1px)")
         }
 
+        // kolo-exception: 960px has no exact named Kolo breakpoint, and grid-template-columns has no utility.
         media("(max-width: 960px)") {
             ".browse-layout" {
                 raw("grid-template-columns", "1fr")
             }
             ".browse-sidebar" {
-                // kolo-exception: max-width variant not representable in current min-width-only utility variants
+                // kolo-exception: `static` has utility parity, but no Kolo variant preserves the 960px boundary.
                 position = Position.static
             }
         }
+        // kolo-exception: Kolo lacks flex-direction and alignment utilities.
         media("(max-width: 640px)") {
             ".content-top" {
                 flexDirection = FlexDirection.column
@@ -393,6 +395,7 @@ class CssController {
             fontSize = 0.76.rem
         }
 
+        // kolo-exception: padding utilities exist, but no named Kolo variant preserves the 700px boundary.
         media("(max-width: 700px)") {
             ".art-layout" {
                 padding = Padding(0.75.rem)
