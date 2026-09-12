@@ -113,7 +113,7 @@ class FontUtilitiesTest {
         generator.generate(token, builder).shouldBeTrue()
         builder.toString() shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:text-2xl {
             font-size: 1.5rem;
             }
@@ -145,7 +145,7 @@ class FontUtilitiesTest {
         val css = mixedCompiler.compile("md:grid;mt-2;font-semibold;hover:inline-flex")
         css shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
             }

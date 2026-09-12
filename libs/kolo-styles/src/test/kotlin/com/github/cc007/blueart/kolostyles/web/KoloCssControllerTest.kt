@@ -136,7 +136,7 @@ class KoloCssControllerTest {
         response.statusCode shouldBe HttpStatus.OK
         response.body shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
             }

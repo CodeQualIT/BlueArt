@@ -94,7 +94,7 @@ class DisplayUtilitiesTest {
         generator.generate(token, builder).shouldBeTrue()
         builder.toString() shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
             }
@@ -126,7 +126,7 @@ class DisplayUtilitiesTest {
         val css = mixedCompiler.compile("md:grid;mt-2;hover:inline-flex")
         css shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
             }

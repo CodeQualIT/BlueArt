@@ -116,7 +116,7 @@ class SizingUtilitiesTest {
         generator.generate(mediaToken, mediaBuilder).shouldBeTrue()
         mediaBuilder.toString() shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:min-h-screen {
             min-height: 100vh;
             }
@@ -146,7 +146,7 @@ class SizingUtilitiesTest {
         val css = mixedCompiler.compile("md:grid;w-full;mt-2;font-semibold;size-1/2")
         css shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
             }

@@ -13,7 +13,7 @@ The system SHALL support the Tailwind-compatible responsive variants `max-sm`, `
 
 #### Scenario: Existing minimum-width variant is requested
 - **WHEN** a request includes a supported utility qualified by an existing `sm` through `2xl` variant
-- **THEN** the utility retains its existing minimum-width media-query behavior
+- **THEN** the utility is emitted in its corresponding `@media (width >= Nrem)` query
 
 ### Requirement: Kolo composes max-width variants with state and nested variants
 The system SHALL allow a max-width responsive variant to compose with supported state variants and nested variant scopes. Composed variants MUST preserve the canonical raw token, escaped utility selector, pseudo-class selector semantics, and direction-specific media query.
