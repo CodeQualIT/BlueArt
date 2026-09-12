@@ -50,10 +50,10 @@ class KoloHtmlRuntimeTest {
             body {
                 div {
                     kolo {
-                        variant("md").recordBase("mt-2")
-                        recordBase("flex")
-                        variant("hover").recordBase("bg-sky-500")
-                        variant("md").recordBase("mt-2")
+                        md.mt(2)
+                        flex
+                        hover.recordBase("bg-sky-500")
+                        md.mt(2)
                     }
                 }
             }
@@ -84,7 +84,7 @@ class KoloHtmlRuntimeTest {
             body {
                 div(classes = "existing") {
                     kolo {
-                        recordBase("flex")
+                        flex
                     }
                 }
             }
@@ -112,7 +112,7 @@ class KoloHtmlRuntimeTest {
             body {
                 div {
                     kolo {
-                        variant("dark").variant("md").recordBase("bg-sky-500")
+                        variant("dark").md.recordBase("bg-sky-500")
                     }
                 }
             }
@@ -143,14 +143,14 @@ class KoloHtmlRuntimeTest {
             body {
                 div {
                     kolo {
-                        recordBase("flex")  // overlapping
-                        recordBase("mt-2")  // unique to this element
+                        flex
+                        mt(2)
                     }
                 }
                 div {
                     kolo {
-                        recordBase("flex")  // overlapping
-                        recordBase("px-4")  // unique to this element
+                        flex
+                        px(4)
                     }
                 }
             }
@@ -178,7 +178,7 @@ class KoloHtmlRuntimeTest {
             body {
                 div {
                     kolo {
-                        recordBase("flex")
+                        flex
                     }
                 }
             }
@@ -217,8 +217,8 @@ class KoloHtmlRuntimeTest {
                         plAuto
                         pxAuto
                         pyAuto
-                        variant("md").mtAuto
-                        variant("md").ptAuto
+                        md.mtAuto
+                        md.ptAuto
                     }
                 }
             }
@@ -248,8 +248,8 @@ class KoloHtmlRuntimeTest {
                     kolo {
                         flex
                         inlineGrid
-                        variant("hover").inlineFlex
-                        variant("md").grid
+                        hover.inlineFlex
+                        md.grid
                     }
                 }
             }
@@ -296,27 +296,27 @@ class KoloHtmlRuntimeTest {
                         tableRowGroup
                         tableRow
                         tableFooterGroup
-                        variant("md").block
-                        variant("md").`inline`
-                        variant("md").inlineBlock
-                        variant("md").flowRoot
-                        variant("md").flex
-                        variant("md").inlineFlex
-                        variant("md").grid
-                        variant("md").inlineGrid
-                        variant("md").contents
-                        variant("md").listItem
-                        variant("md").hidden
-                        variant("md").table
-                        variant("md").inlineTable
-                        variant("md").tableCaption
-                        variant("md").tableCell
-                        variant("md").tableColumn
-                        variant("md").tableColumnGroup
-                        variant("md").tableHeaderGroup
-                        variant("md").tableRowGroup
-                        variant("md").tableRow
-                        variant("md").tableFooterGroup
+                        md.block
+                        md.`inline`
+                        md.inlineBlock
+                        md.flowRoot
+                        md.flex
+                        md.inlineFlex
+                        md.grid
+                        md.inlineGrid
+                        md.contents
+                        md.listItem
+                        md.hidden
+                        md.table
+                        md.inlineTable
+                        md.tableCaption
+                        md.tableCell
+                        md.tableColumn
+                        md.tableColumnGroup
+                        md.tableHeaderGroup
+                        md.tableRowGroup
+                        md.tableRow
+                        md.tableFooterGroup
                     }
                 }
             }
@@ -350,8 +350,8 @@ class KoloHtmlRuntimeTest {
                         fontSans
                         text2xl
                         fontSemiBold
-                        variant("hover").fontBlack
-                        variant("md").textBase
+                        hover.fontBlack
+                        md.textBase
                     }
                 }
             }
@@ -402,31 +402,31 @@ class KoloHtmlRuntimeTest {
                         fontBold
                         fontExtraBold
                         fontBlack
-                        variant("md").fontSans
-                        variant("md").fontSerif
-                        variant("md").fontMono
-                        variant("md").textXs
-                        variant("md").textSm
-                        variant("md").textBase
-                        variant("md").textLg
-                        variant("md").textXl
-                        variant("md").text2xl
-                        variant("md").text3xl
-                        variant("md").text4xl
-                        variant("md").text5xl
-                        variant("md").text6xl
-                        variant("md").text7xl
-                        variant("md").text8xl
-                        variant("md").text9xl
-                        variant("md").fontThin
-                        variant("md").fontExtraLight
-                        variant("md").fontLight
-                        variant("md").fontNormal
-                        variant("md").fontMedium
-                        variant("md").fontSemiBold
-                        variant("md").fontBold
-                        variant("md").fontExtraBold
-                        variant("md").fontBlack
+                        md.fontSans
+                        md.fontSerif
+                        md.fontMono
+                        md.textXs
+                        md.textSm
+                        md.textBase
+                        md.textLg
+                        md.textXl
+                        md.text2xl
+                        md.text3xl
+                        md.text4xl
+                        md.text5xl
+                        md.text6xl
+                        md.text7xl
+                        md.text8xl
+                        md.text9xl
+                        md.fontThin
+                        md.fontExtraLight
+                        md.fontLight
+                        md.fontNormal
+                        md.fontMedium
+                        md.fontSemiBold
+                        md.fontBold
+                        md.fontExtraBold
+                        md.fontBlack
                     }
                 }
             }
@@ -459,7 +459,7 @@ class KoloHtmlRuntimeTest {
                         minW(0)
                         maxW(MD)
                         size(1, 2)
-                        variant("md").maxH(DVH)
+                        md.maxH(DVH)
                     }
                 }
             }
@@ -486,8 +486,8 @@ class KoloHtmlRuntimeTest {
                         overflowHidden
                         objectCover
                         boxBorder
-                        variant("hover").overflowVisible
-                        variant("md").insetX(4)
+                        hover.overflowVisible
+                        md.insetX(4)
                     }
                 }
             }
@@ -518,7 +518,7 @@ class KoloHtmlRuntimeTest {
                 div {
                     kolo {
                         maxSm.p(4)
-                        maxMd.variant("hover").flex
+                        maxMd.hover.flex
                         variant("max-md").variant("hover").grid
                     }
                 }
@@ -526,6 +526,42 @@ class KoloHtmlRuntimeTest {
         }
 
         val expectedTokens = listOf("max-sm:p-4", "max-md:hover:flex", "max-md:hover:grid")
+        val canonicalTokens = canonicalizeKoloTokens(expectedTokens)
+        val expectedHref = "/css/generated/kolo.css?version=abc123&kolo=" + URLEncoder.encode(canonicalTokens, UTF_8)
+
+        extractHeadStylesheetHref(html) shouldBe expectedHref
+        extractFirstBodyDivClasses(html) shouldContainExactlyInAnyOrder expectedTokens.map { "k-$it" }
+    }
+
+    @Test
+    fun `typed responsive and state scopes match direct variant chaining`() {
+        val html = renderKoloHtml(version = "abc123") {
+            head { koloStylesheetLink() }
+            body {
+                div {
+                    kolo {
+                        sm.p(1)
+                        md.p(1)
+                        lg.p(1)
+                        xl.p(1)
+                        x2l.p(1)
+                        hover.flex
+                        focus.flex
+                        focusVisible.flex
+                        active.flex
+                        visited.flex
+                        maxMd.hover.grid
+                        variant("max-md").variant("hover").inlineGrid
+                    }
+                }
+            }
+        }
+
+        val expectedTokens = listOf(
+            "sm:p-1", "md:p-1", "lg:p-1", "xl:p-1", "2xl:p-1",
+            "hover:flex", "focus:flex", "focus-visible:flex", "active:flex", "visited:flex",
+            "max-md:hover:grid", "max-md:hover:inline-grid",
+        )
         val canonicalTokens = canonicalizeKoloTokens(expectedTokens)
         val expectedHref = "/css/generated/kolo.css?version=abc123&kolo=" + URLEncoder.encode(canonicalTokens, UTF_8)
 

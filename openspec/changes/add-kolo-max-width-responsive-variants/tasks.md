@@ -13,7 +13,7 @@
 
 ## 3. DSL and Runtime Integration
 
-- [x] 3.1 Add typed, discoverable maximum-width variant-scope helpers for `max-sm`, `max-md`, `max-lg`, `max-xl`, and `max-2xl` on both `KoloScope` and `KoloVariantScope`.
+- [x] 3.1 Add typed, discoverable responsive and state variant-scope helpers for `sm` through `2xl`, `max-sm` through `max-2xl`, and supported pseudo-state variants on both `KoloScope` and `KoloVariantScope`.
 - [x] 3.2 Ensure maximum-width helpers and direct `variant(name)` chaining record identical canonical raw tokens for base, nested, and state-composed utilities.
 - [x] 3.3 Add runtime coverage proving rendered classes and finalized `kolo.css` hrefs preserve canonical maximum-width and state/maximum-width variant chains.
 

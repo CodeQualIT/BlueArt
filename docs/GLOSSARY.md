@@ -99,7 +99,7 @@ Spring `@Component` implementations that provide sizing token parsing (`StylePar
 `KoloCssCompiler` is a Spring `@Service` that receives injected `List<StyleParserHook>` and `List<StyleGeneratorHook>`; Spring discovers hook implementations (including spacing and display hooks) as beans and supplies them automatically.
 
 ### Responsive Variant
-A named Kolo scope that qualifies a utility by viewport range. `sm` through `2xl` generate `width >=` queries at 40rem, 48rem, 64rem, 80rem, and 96rem; `max-sm` through `max-2xl` generate exclusive `width <` queries at those thresholds.
+A typed Kolo scope that qualifies a utility by viewport range. `sm`, `md`, `lg`, `xl`, and `x2l` generate `width >=` queries at 40rem, 48rem, 64rem, 80rem, and 96rem; `maxSm` through `max2xl` generate exclusive `width <` queries at those thresholds. State scopes are `hover`, `focus`, `focusVisible`, `active`, and `visited`.
 
 ### `kolo-exception`
 An inline page-CSS marker for behavior that Kolo cannot represent without changing semantics. The browse 640px and 960px rules and art 700px rules remain exceptions because their inclusive or application-specific breakpoints do not equal a named exclusive Kolo range.

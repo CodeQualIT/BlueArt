@@ -8,7 +8,7 @@ The system SHALL collect Kolo tokens in render scope and emit a canonical `kolo.
 - **THEN** collected tokens are canonicalized and included in the emitted `kolo.css` href
 
 ### Requirement: Render-time Kolo DSL lives under `kolostyles.dsl`
-The system SHALL expose render-time Kolo APIs from the `kolostyles.dsl` namespace, with spacing utility helpers under `kolostyles.dsl.spacing`, layout utility helpers under `kolostyles.dsl.layout`, font utility helpers under `kolostyles.dsl.font`, and sizing utility helpers under `kolostyles.dsl.sizing`, while preserving existing token collection and stylesheet-link emission behavior. `KoloScope` and `KoloVariantScope` MUST expose typed or named variant-scope access for `max-sm`, `max-md`, `max-lg`, `max-xl`, and `max-2xl` that produces the same canonical token form as direct variant chaining.
+The system SHALL expose render-time Kolo APIs from the `kolostyles.dsl` namespace, with spacing utility helpers under `kolostyles.dsl.spacing`, layout utility helpers under `kolostyles.dsl.layout`, font utility helpers under `kolostyles.dsl.font`, and sizing utility helpers under `kolostyles.dsl.sizing`, while preserving existing token collection and stylesheet-link emission behavior. `KoloScope` and `KoloVariantScope` MUST expose typed variant-scope access for `sm`, `md`, `lg`, `xl`, `2xl`, `max-sm`, `max-md`, `max-lg`, `max-xl`, `max-2xl`, `hover`, `focus`, `focus-visible`, `active`, and `visited` that produces the same canonical token form as direct variant chaining.
 
 #### Scenario: App module imports Kolo DSL/runtime APIs
 - **WHEN** server-rendered pages use `renderKoloHtml`, `kolo { ... }`, spacing utility helpers, layout utility helpers, font utility helpers, and sizing utility helpers
