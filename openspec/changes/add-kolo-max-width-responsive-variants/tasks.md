@@ -1,13 +1,13 @@
 ## 1. Responsive Variant Foundation
 
 - [x] 1.1 Define shared responsive variant metadata for existing `sm` through `2xl` minimum-width variants and new `max-sm` through `max-2xl` maximum-width variants, including canonical names, directions, and fixed CSS boundaries.
-- [x] 1.2 Set the exclusive maximum-width boundaries to `639.98px`, `767.98px`, `1023.98px`, `1279.98px`, and `1535.98px` for `max-sm` through `max-2xl`.
+- [x] 1.2 Set the exclusive maximum-width boundaries to `40rem`, `48rem`, `64rem`, `80rem`, and `96rem` for `max-sm` through `max-2xl`.
 - [x] 1.3 Refactor all existing utility parser hooks to consume the shared responsive variant metadata without changing accepted state/minimum-width variants or existing typed token contracts.
 
 ## 2. Compiler and CSS Generation
 
 - [x] 2.1 Extend typed compiler token variant metadata so parsed maximum-width variants retain their canonical name, direction, and exclusive boundary.
-- [x] 2.2 Update shared variant-rule generation to emit direction-aware `min-width` or `max-width` media queries while retaining escaped selectors and pseudo-state composition.
+- [x] 2.2 Update shared variant-rule generation to emit direction-aware `min-width` or exclusive `width <` media queries while retaining escaped selectors and pseudo-state composition.
 - [x] 2.3 Verify every registered utility family (spacing, display, non-display layout, offsets, font, and sizing) accepts supported `max-*` variants and rejects unsupported responsive variant names through the existing deterministic diagnostic path.
 - [x] 2.4 Preserve canonical request-token ordering, URL serialization, endpoint paths, and permissive unparsed/unsupported diagnostic output for mixed minimum-width, maximum-width, and state-variant requests.
 

@@ -183,12 +183,12 @@ class KoloCssControllerTest {
         response.statusCode shouldBe HttpStatus.OK
         response.body shouldBe
             """
-            @media (max-width: 639.98px) {
+            @media (width < 40rem) {
             .k-max-sm\:p-4 {
             padding: 1.0rem;
             }
             }
-            @media (max-width: 767.98px) {
+            @media (width < 48rem) {
             .k-max-md\:flex {
             display: flex;
             }
@@ -196,17 +196,17 @@ class KoloCssControllerTest {
             display: grid;
             }
             }
-            @media (max-width: 1023.98px) {
+            @media (width < 64rem) {
             .k-max-lg\:overflow-hidden {
             overflow: hidden;
             }
             }
-            @media (max-width: 1279.98px) {
+            @media (width < 80rem) {
             .k-max-xl\:font-bold {
             font-weight: bold;
             }
             }
-            @media (max-width: 1535.98px) {
+            @media (width < 96rem) {
             .k-max-2xl\:w-full {
             width: 100%;
             }

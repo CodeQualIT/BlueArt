@@ -1,6 +1,5 @@
 package com.github.cc007.blueart.kolostyles.compiler
 
-import kotlinx.css.px
 import kotlinx.css.rem
 
 internal val KOLO_STATE_VARIANTS = setOf("hover", "focus", "focus-visible", "active", "visited")
@@ -11,11 +10,11 @@ internal val KOLO_RESPONSIVE_VARIANTS: Map<String, MediaVariant> = mapOf(
     "lg" to MediaVariant("lg", MediaVariantDirection.MIN, 64.rem),
     "xl" to MediaVariant("xl", MediaVariantDirection.MIN, 80.rem),
     "2xl" to MediaVariant("2xl", MediaVariantDirection.MIN, 96.rem),
-    "max-sm" to MediaVariant("max-sm", MediaVariantDirection.MAX, 639.98.px),
-    "max-md" to MediaVariant("max-md", MediaVariantDirection.MAX, 767.98.px),
-    "max-lg" to MediaVariant("max-lg", MediaVariantDirection.MAX, 1023.98.px),
-    "max-xl" to MediaVariant("max-xl", MediaVariantDirection.MAX, 1279.98.px),
-    "max-2xl" to MediaVariant("max-2xl", MediaVariantDirection.MAX, 1535.98.px),
+    "max-sm" to MediaVariant("max-sm", MediaVariantDirection.MAX, 40.rem),
+    "max-md" to MediaVariant("max-md", MediaVariantDirection.MAX, 48.rem),
+    "max-lg" to MediaVariant("max-lg", MediaVariantDirection.MAX, 64.rem),
+    "max-xl" to MediaVariant("max-xl", MediaVariantDirection.MAX, 80.rem),
+    "max-2xl" to MediaVariant("max-2xl", MediaVariantDirection.MAX, 96.rem),
 )
 
 internal data class ParsedKoloVariants(

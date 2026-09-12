@@ -86,9 +86,9 @@ media semantics.
 
 **Decision:** Add `max-sm`, `max-md`, `max-lg`, `max-xl`, and `max-2xl` beside the
 existing named min-width variants. Their upper bounds use exclusive Tailwind-style
-range semantics: each `max-*` boundary is infinitesimally below its matching
-configured breakpoint, avoiding overlap with that breakpoint's min-width rule.
-The generator will serialize the boundary deterministically in CSS.
+range semantics: `width < 40rem`, `width < 48rem`, `width < 64rem`,
+`width < 80rem`, and `width < 96rem`, respectively. The generator will serialize
+the range deterministically in CSS.
 
 **Rationale:** Named variants provide a typed, auditable API and predictable
 composition such as `max-sm:...` or `hover:max-md:...`, while exclusive ranges
