@@ -37,6 +37,3 @@ internal fun parseKoloVariants(variants: List<String>): ParsedKoloVariants? {
         mediaVariant = mediaVariants.firstOrNull(),
     )
 }
-
-internal fun hasUnsupportedMaximumVariant(token: String): Boolean =
-    token.split(':').dropLast(1).any { it.startsWith("max-") && it !in KOLO_RESPONSIVE_VARIANTS }

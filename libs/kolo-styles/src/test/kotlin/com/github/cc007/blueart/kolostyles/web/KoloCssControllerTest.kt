@@ -212,7 +212,7 @@ class KoloCssControllerTest {
             }
             }
             :root {
-            --kolo-unparsed-6: "max-700:p-4";
+            --kolo-unsupported-6: "max-700:p-4";
             }
 
             """.trimIndent()

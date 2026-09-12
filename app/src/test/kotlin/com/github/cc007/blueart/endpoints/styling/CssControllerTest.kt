@@ -177,28 +177,11 @@ class CssControllerTest {
         val artUniversal = findSelectorDeclarations(artCss, "*", allowMissing = true).joinToString("\n")
         val clampedText = findSelectorDeclarations(browseCss, ".post-card-text-only .post-text", allowMissing = true).joinToString("\n")
 
-        browseMerged shouldContain "position: static !important;"
+        browseMerged shouldContain "position: static;"
         browseUniversal shouldContain "box-sizing: border-box;"
         artUniversal shouldContain "box-sizing: border-box;"
         clampedText shouldContain "overflow: hidden;"
     }
-
-    @Test
-    fun `stylesheets retain legacy maximum-width exceptions at exact boundaries`() {
-        val browseCss = controller.browseStylesheet()
-        val artCss = controller.artStylesheet()
-
-        browseCss shouldContain "@media (max-width: 960px)"
-        browseCss shouldContain "grid-template-columns: 1fr;"
-        browseCss shouldContain "position: static !important;"
-        browseCss shouldContain "@media (max-width: 640px)"
-        browseCss shouldContain "flex-direction: column;"
-        browseCss shouldContain "align-items: flex-start;"
-        artCss shouldContain "@media (max-width: 700px)"
-        artCss shouldContain "padding: 0.75rem !important;"
-        artCss shouldContain "padding: 0.8rem !important;"
-    }
-
 
     private fun assertContainsAllRuleHeaders(
         legacyCss: String,

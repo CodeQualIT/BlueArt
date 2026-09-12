@@ -79,7 +79,7 @@ fun HTMLTag.kolo(block: KoloScope.() -> Unit) {
 class KoloScope internal constructor(
     private val sink: (String) -> Unit,
 ) {
-    fun variant(name: String): KoloVariantScope = KoloVariantScope(sink, listOf(name))
+    internal fun variant(name: String): KoloVariantScope = KoloVariantScope(sink, listOf(name))
 
     internal fun recordBase(token: String) {
         sink(token)
@@ -90,7 +90,7 @@ class KoloVariantScope internal constructor(
     private val sink: (String) -> Unit,
     private val variants: List<String>,
 ) {
-    fun variant(name: String): KoloVariantScope = KoloVariantScope(sink, variants + name)
+    internal fun variant(name: String): KoloVariantScope = KoloVariantScope(sink, variants + name)
 
     internal fun recordBase(token: String) {
         sink(variants.joinToString(separator = ":", postfix = ":") + token)

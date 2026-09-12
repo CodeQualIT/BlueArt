@@ -266,17 +266,15 @@ class CssController {
 
         media("(max-width: 960px)") {
             ".browse-layout" {
-                // kolo-exception: legacy 960px breakpoint and grid-template-columns lack exact named utility parity
                 raw("grid-template-columns", "1fr")
             }
             ".browse-sidebar" {
-                // kolo-exception: legacy 960px breakpoint lacks exact named maximum-width parity; override later-linked sticky utility
-                raw("position", "static !important")
+                // kolo-exception: max-width variant not representable in current min-width-only utility variants
+                position = Position.static
             }
         }
         media("(max-width: 640px)") {
             ".content-top" {
-                // kolo-exception: inclusive 640px breakpoint differs from exclusive max-sm boundary
                 flexDirection = FlexDirection.column
                 raw("align-items", "flex-start")
             }
@@ -397,12 +395,10 @@ class CssController {
 
         media("(max-width: 700px)") {
             ".art-layout" {
-                // kolo-exception: legacy 700px breakpoint lacks exact named maximum-width parity; override later-linked spacing utility
-                raw("padding", "0.75rem !important")
+                padding = Padding(0.75.rem)
             }
             ".art-card, .comments" {
-                // kolo-exception: legacy 700px breakpoint lacks exact named maximum-width parity; override later-linked spacing utility
-                raw("padding", "0.8rem !important")
+                padding = Padding(0.8.rem)
             }
         }
     }
