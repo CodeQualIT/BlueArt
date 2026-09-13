@@ -1,7 +1,7 @@
 package com.github.cc007.blueart.components.richtext
 
-import com.github.cc007.blueart.kolostyles.dsl.font.fontSemiBold
-import com.github.cc007.blueart.kolostyles.dsl.kolo
+import io.github.cc007.kolostyles.dsl.font.fontSemiBold
+import io.github.cc007.kolostyles.dsl.kolo
 import kotlinx.html.FlowContent
 import kotlinx.html.a
 import kotlinx.html.br

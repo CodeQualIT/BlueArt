@@ -1,13 +1,13 @@
 package com.github.cc007.blueart.components
 
-import com.github.cc007.blueart.kolostyles.dsl.kolo
-import com.github.cc007.blueart.kolostyles.dsl.layout.display.flex
-import com.github.cc007.blueart.kolostyles.dsl.layout.offset.top
-import com.github.cc007.blueart.kolostyles.dsl.layout.sticky
-import com.github.cc007.blueart.kolostyles.dsl.layout.z
-import com.github.cc007.blueart.kolostyles.dsl.spacing.m
-import com.github.cc007.blueart.kolostyles.dsl.spacing.px
-import com.github.cc007.blueart.kolostyles.dsl.spacing.py
+import io.github.cc007.kolostyles.dsl.kolo
+import io.github.cc007.kolostyles.dsl.layout.display.flex
+import io.github.cc007.kolostyles.dsl.layout.offset.top
+import io.github.cc007.kolostyles.dsl.layout.sticky
+import io.github.cc007.kolostyles.dsl.layout.z
+import io.github.cc007.kolostyles.dsl.spacing.m
+import io.github.cc007.kolostyles.dsl.spacing.px
+import io.github.cc007.kolostyles.dsl.spacing.py
 import kotlinx.html.*
 
 fun BODY.topBanner(csrfToken: String?) {

@@ -1,9 +1,9 @@
 package com.github.cc007.blueart.components.richtext
 
-import com.github.cc007.blueart.kolostyles.dsl.koloStylesheetLink
-import com.github.cc007.blueart.kolostyles.dsl.renderKoloHtml
 import com.github.cc007.blueart.testsupport.parseHtml
 import com.github.cc007.blueart.testsupport.selectRequired
+import io.github.cc007.kolostyles.dsl.koloStylesheetLink
+import io.github.cc007.kolostyles.dsl.renderKoloHtml
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
