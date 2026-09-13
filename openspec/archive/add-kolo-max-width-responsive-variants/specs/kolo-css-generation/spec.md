@@ -1,13 +1,4 @@
-# Kolo CSS Generation
-
-## Provenance
-- `BA-021` (`docs/ai-tasks/2026-05-09-BA-021-kolo-css-endpoint-generation-from-parameters.md`)
-- `docs/TESTING.md`
-
-## Purpose
-Define endpoint-side Kolo CSS generation, including parser/generator flow and diagnostic handling.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Kolo CSS endpoint handles tokenized requests deterministically
 The system SHALL generate CSS from `/css/generated/kolo.css` requests using the parser/generator hook pipeline. Parser hooks SHALL parse raw token strings into typed compiler tokens, generator hooks SHALL emit rules into a shared `kotlinx.css.CssBuilder` instance owned by the compiler instead of returning raw CSS strings, and the compiler SHALL return final CSS by serializing that shared builder. The endpoint MUST generate rules for supported spacing, layout, font-family, font-size, font-weight, and sizing utility tokens through the same deterministic pipeline. Supported layout tokens MUST include display, box-sizing, overflow, position, inset/top/right/bottom/left offsets, z-index, and object-fit. The endpoint MUST emit supported utilities qualified by `max-sm`, `max-md`, `max-lg`, `max-xl`, or `max-2xl` inside the corresponding deterministic exclusive maximum-width media query.

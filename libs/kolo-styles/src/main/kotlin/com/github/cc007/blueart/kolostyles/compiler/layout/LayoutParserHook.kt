@@ -1,14 +1,14 @@
 package com.github.cc007.blueart.kolostyles.compiler.layout
 
-import com.github.cc007.blueart.kolostyles.compiler.*
+import com.github.cc007.blueart.kolostyles.compiler.MediaVariant
+import com.github.cc007.blueart.kolostyles.compiler.StyleParserHook
+import com.github.cc007.blueart.kolostyles.compiler.Token
+import com.github.cc007.blueart.kolostyles.compiler.parseKoloVariants
 import kotlinx.css.BoxSizing
 import kotlinx.css.ObjectFit
 import kotlinx.css.Overflow
 import kotlinx.css.Position
 import org.springframework.stereotype.Component
-
-private val LAYOUT_MEDIA_VARIANTS = KOLO_MEDIA_VARIANT_MIN_WIDTHS
-    .mapValues { (name, value) -> MediaVariant(name, value) }
 
 private val BOX_SIZING_VALUES = linkedMapOf(
     "box-border" to BoxSizing.borderBox,
@@ -129,15 +129,8 @@ class LayoutParserHook : StyleParserHook {
     }
 
     private fun parseVariants(variants: List<String>): Pair<List<String>, MediaVariant?>? {
-        if (variants.any { it !in KOLO_STATE_VARIANTS && it !in LAYOUT_MEDIA_VARIANTS }) {
-            return null
-        }
-        val stateVariants = variants.filter { it in KOLO_STATE_VARIANTS }
-        val mediaVariants = LAYOUT_MEDIA_VARIANTS.filterKeys { it in variants }
-        if (mediaVariants.size > 1) {
-            return null
-        }
-        return stateVariants to mediaVariants.values.firstOrNull()
+        val parsedVariants = parseKoloVariants(variants) ?: return null
+        return parsedVariants.stateVariants to parsedVariants.mediaVariant
     }
 }
 

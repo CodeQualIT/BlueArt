@@ -113,7 +113,7 @@ class LayoutUtilitiesTest {
         generateLayoutToken(media, mediaBuilder).shouldBeTrue()
         mediaBuilder.toString() shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:top-18 {
             top: 4.5rem;
             }
@@ -164,7 +164,7 @@ class LayoutUtilitiesTest {
         val css = mixedCompiler.compile("md:grid;overflow-hidden;mt-2;font-semibold;size-full;sticky;top-0;z-10;object-cover")
         css shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
             }

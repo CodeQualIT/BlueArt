@@ -1,13 +1,4 @@
-# Kolo Utility Architecture
-
-## Provenance
-- `BA-016` (`docs/ai-tasks/2026-05-06-BA-016-co-located-tailwind-like-styling-architecture.md`)
-- `docs/DECISIONS.md` (D-007)
-
-## Purpose
-Define core Kolo utility-token architecture, canonicalization rules, and migration-era stylesheet coexistence.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Kolo utility tokens follow canonical architecture contracts
 The system SHALL define explicit compiler token contracts for utility generation. Parser hooks SHALL parse raw utility strings into typed tokens, and generator hooks SHALL consume those typed tokens to emit CSS through the compiler pipeline. Supported utility families MUST include spacing, layout, font-family, font-size, font-weight, and sizing tokens in the same parser/generator hook architecture. The layout family MUST include display, box-sizing, overflow, position, inset/top/right/bottom/left offsets, z-index, and object-fit tokens. All utility families MUST use shared responsive variant metadata that defines the canonical variant name, direction (`min` or `max`), and CSS boundary for supported minimum-width and maximum-width variants.

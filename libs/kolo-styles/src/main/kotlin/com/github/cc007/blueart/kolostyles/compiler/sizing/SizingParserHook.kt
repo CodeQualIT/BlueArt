@@ -1,11 +1,10 @@
 package com.github.cc007.blueart.kolostyles.compiler.sizing
 
-import com.github.cc007.blueart.kolostyles.compiler.*
+import com.github.cc007.blueart.kolostyles.compiler.StyleParserHook
+import com.github.cc007.blueart.kolostyles.compiler.Token
+import com.github.cc007.blueart.kolostyles.compiler.parseKoloVariants
 import kotlinx.css.*
 import org.springframework.stereotype.Component
-
-private val SIZING_MEDIA_VARIANTS = KOLO_MEDIA_VARIANT_MIN_WIDTHS
-    .mapValues { (name, value) -> MediaVariant(name, value) }
 
 private val SIZING_UTILITY_PREFIXES = listOf("min-w", "max-w", "min-h", "max-h", "size", "w", "h")
 
@@ -58,19 +57,12 @@ class SizingParserHook : StyleParserHook {
         val value = resolveSizingValue(utility, rawValue) ?: return null
 
         val variants = parts.dropLast(1)
-        if (variants.any { it !in KOLO_STATE_VARIANTS && it !in SIZING_MEDIA_VARIANTS }) {
-            return null
-        }
-        val stateVariants = variants.filter { it in KOLO_STATE_VARIANTS }
-        val mediaVariants = SIZING_MEDIA_VARIANTS.filterKeys { it in variants }
-        if (mediaVariants.size > 1) {
-            return null
-        }
+        val parsedVariants = parseKoloVariants(variants) ?: return null
 
         return SizingToken(
             raw = token,
-            stateVariants = stateVariants,
-            mediaVariant = mediaVariants.values.firstOrNull(),
+            stateVariants = parsedVariants.stateVariants,
+            mediaVariant = parsedVariants.mediaVariant,
             utility = utility,
             value = value,
         )

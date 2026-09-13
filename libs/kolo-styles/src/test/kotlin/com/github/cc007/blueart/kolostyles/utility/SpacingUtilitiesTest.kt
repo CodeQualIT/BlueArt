@@ -165,7 +165,7 @@ class SpacingUtilitiesTest {
         generator.generate(def, cssBuilder).shouldBeTrue()
         cssBuilder.toString() shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:p-4 {
             padding: 1.0rem;
             }

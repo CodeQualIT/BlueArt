@@ -24,10 +24,14 @@ object VisualTestRuntime {
     private const val VIEWPORT_WIDTH = 1366
     private const val VIEWPORT_HEIGHT = 900
 
-    fun newContext(browser: Browser): BrowserContext {
+    fun newContext(
+        browser: Browser,
+        width: Int = VIEWPORT_WIDTH,
+        height: Int = VIEWPORT_HEIGHT,
+    ): BrowserContext {
         val context = browser.newContext(
             Browser.NewContextOptions()
-                .setViewportSize(VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
+                .setViewportSize(width, height)
                 .setLocale("en-US")
                 .setTimezoneId("UTC")
         )

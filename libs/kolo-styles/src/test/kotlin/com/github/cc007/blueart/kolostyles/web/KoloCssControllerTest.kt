@@ -136,7 +136,7 @@ class KoloCssControllerTest {
         response.statusCode shouldBe HttpStatus.OK
         response.body shouldBe
             """
-            @media (min-width: 48rem) {
+            @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
             }
@@ -170,6 +170,51 @@ class KoloCssControllerTest {
             object-fit: cover;
             }
             
+            """.trimIndent()
+    }
+
+    @Test
+    fun `kolo stylesheet compiles mixed maximum-width variants and diagnoses unknown variants`() {
+        val response = defaultController.koloStylesheet(
+            version = "abc123",
+            kolo = "max-sm:p-4;max-md:flex;max-lg:overflow-hidden;max-xl:font-bold;max-2xl:w-full;hover:max-md:grid;max-700:p-4",
+        )
+
+        response.statusCode shouldBe HttpStatus.OK
+        response.body shouldBe
+            """
+            @media (width < 40rem) {
+            .k-max-sm\:p-4 {
+            padding: 1.0rem;
+            }
+            }
+            @media (width < 48rem) {
+            .k-max-md\:flex {
+            display: flex;
+            }
+            .k-hover\:max-md\:grid:hover {
+            display: grid;
+            }
+            }
+            @media (width < 64rem) {
+            .k-max-lg\:overflow-hidden {
+            overflow: hidden;
+            }
+            }
+            @media (width < 80rem) {
+            .k-max-xl\:font-bold {
+            font-weight: bold;
+            }
+            }
+            @media (width < 96rem) {
+            .k-max-2xl\:w-full {
+            width: 100%;
+            }
+            }
+            :root {
+            --kolo-unsupported-6: "max-700:p-4";
+            }
+
             """.trimIndent()
     }
 }

@@ -3,6 +3,7 @@ package com.github.cc007.blueart.visual
 import com.github.cc007.blueart.BlueArtApplication
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.EnumSource
@@ -98,10 +99,43 @@ class PlaywrightVisualRegressionTest {
         }
     }
 
-    private fun runVisualScenario(browserType: VisualBrowser, name: String, block: (Page) -> Unit) {
+    @ParameterizedTest(name = "legacy responsive boundaries [{0}]")
+    @EnumSource(VisualBrowser::class)
+    fun legacyResponsiveBoundaries(browser: VisualBrowser) {
+        runVisualScenario(browser, "browse-960", width = 960) { page ->
+            VisualTestRuntime.loginAsDummy(page, baseUrl)
+            page.waitForSelector(".browse-sidebar")
+            (page.evaluate("() => getComputedStyle(document.querySelector('.browse-sidebar')).position") as String) shouldBe "static"
+            (page.evaluate("() => getComputedStyle(document.querySelector('.browse-layout')).gridTemplateColumns.split(' ').length === 1") as Boolean) shouldBe true
+        }
+        runVisualScenario(browser, "browse-640", width = 640) { page ->
+            VisualTestRuntime.loginAsDummy(page, baseUrl)
+            page.waitForSelector(".content-top")
+            (page.evaluate("() => getComputedStyle(document.querySelector('.content-top')).flexDirection") as String) shouldBe "column"
+            (page.evaluate("() => getComputedStyle(document.querySelector('.content-top')).alignItems") as String) shouldBe "flex-start"
+        }
+        runVisualScenario(browser, "art-700", width = 700) { page ->
+            VisualTestRuntime.loginAsDummy(page, baseUrl)
+            val uri = URLEncoder.encode(
+                "at://dummy.localhost/app.bsky.feed.post/image-gallery",
+                StandardCharsets.UTF_8,
+            )
+            page.navigate("$baseUrl/art/bafyreidummyimage-gallery?uri=$uri")
+            page.waitForSelector(".art-card")
+            (page.evaluate("() => getComputedStyle(document.querySelector('.art-layout')).paddingTop") as String) shouldBe "12px"
+            (page.evaluate("() => getComputedStyle(document.querySelector('.art-card')).paddingTop") as String) shouldBe "12.8px"
+        }
+    }
+
+    private fun runVisualScenario(
+        browserType: VisualBrowser,
+        name: String,
+        width: Int = 1366,
+        block: (Page) -> Unit,
+    ) {
         Playwright.create().use { playwright ->
             browserType.launch(playwright).use { browser ->
-                VisualTestRuntime.newContext(browser).use { context ->
+                VisualTestRuntime.newContext(browser, width = width).use { context ->
                     val page = context.newPage()
                     try {
                         block(page)
