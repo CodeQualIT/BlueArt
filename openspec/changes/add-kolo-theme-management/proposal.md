@@ -10,10 +10,14 @@ The page CSS owns a repeated BlueArt palette as raw CSS variables, preventing co
 ## Capabilities
 
 ### New Capabilities
-TODO
+- `kolo-theme-management`: reusable default themes, ordered consumer overlays, and deterministic theme-property emission
 
 ### Modified Capabilities
-TODO
+- `kolo-utility-architecture`: Extends the utility contract with allow-listed theme resolution.
+- `kolo-css-generation`: Extends deterministic CSS generation with requested theme-property and keyframe output.
+- `kolo-html-runtime-integration`: Extends typed DSL/runtime APIs for theme-aware utility families.
+- `generated-page-stylesheets`: Defines page-CSS coexistence while theme values migrate to Kolo.
+- `kolo-font-ownership`: Moves font-family value resolution to the shared Kolo theme.
 
 ## Impact
 
