@@ -20,4 +20,4 @@ Browse and art styling still centralizes solid surfaces, borders, outlines, radi
 
 ## Impact
 
-Depends on `add-kolo-theme-color-tokens`; affects `:libs:kolo-styles`, page render sites, CssController, and visual baselines.
+Depends on `add-kolo-theme-management`; affects `:libs:kolo-styles`, page render sites, CssController, and visual baselines.
