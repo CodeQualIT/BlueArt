@@ -7,6 +7,7 @@ import io.kotest.assertions.fail
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.optional.shouldBePresent
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldEndWith
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -70,6 +71,16 @@ class DummyLoginFlowTest(
         detailDocument.selectRequired("p.art-text") shouldContainText "Multi-image embed to exercise the gallery layout."
         detailDocument.selectRequired(".art-image-grid")
         detailDocument.select(".art-image-grid img.art-image").size shouldBe 2
+
+        listOf(browseDocument to "browse", detailDocument to "art").forEach { (document, page) ->
+            document.selectRequired("body.k-font-sans")
+            document.selectRequired("link[href='/css/generated/$page.css']")
+            val koloHref = document.selectRequired("link[href^='/css/generated/kolo.css']").attr("href")
+            val koloCss = get(koloHref)
+            koloCss.statusCode() shouldBe 200
+            koloCss.body() shouldContain "--k-font-sans: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;"
+            koloCss.body() shouldContain "font-family: var(--k-font-sans);"
+        }
     }
 
     private fun get(path: String): HttpResponse<String> {

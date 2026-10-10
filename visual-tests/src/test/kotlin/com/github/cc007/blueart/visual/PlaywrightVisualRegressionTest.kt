@@ -44,6 +44,23 @@ class PlaywrightVisualRegressionTest {
         }
     }
 
+    @ParameterizedTest(name = "GIF frame remains stable [{0}]")
+    @EnumSource(VisualBrowser::class)
+    fun gifFrameRemainsStable(browser: VisualBrowser) {
+        runVisualScenario(browser, "gif-frame-stability") { page ->
+            VisualTestRuntime.loginAsDummy(page, baseUrl)
+            VisualTestRuntime.disableAnimations(page)
+            VisualTestRuntime.waitForStableRendering(page)
+            val image = page.locator("section.feed-grid img[src*='.gif']")
+            image.count() shouldBe 1
+            (image.evaluate("(image) => image.naturalWidth > 0") as Boolean) shouldBe true
+            val firstCapture = image.screenshot()
+            // Wait across multiple GIF frame delays to detect decoder-driven playback.
+            page.waitForTimeout(1000.0)
+            image.screenshot().contentEquals(firstCapture) shouldBe true
+        }
+    }
+
     @ParameterizedTest(name = "browse card {1} snapshot [{0}]")
     @MethodSource("browseCardCases")
     fun browseCardSnapshot(browser: VisualBrowser, cardName: String, cardIndex: Int) {
@@ -107,6 +124,9 @@ class PlaywrightVisualRegressionTest {
             page.waitForSelector(".browse-sidebar")
             (page.evaluate("() => getComputedStyle(document.querySelector('.browse-sidebar')).position") as String) shouldBe "static"
             (page.evaluate("() => getComputedStyle(document.querySelector('.browse-layout')).gridTemplateColumns.split(' ').length === 1") as Boolean) shouldBe true
+            page.setViewportSize(961, 900)
+            (page.evaluate("() => getComputedStyle(document.querySelector('.browse-sidebar')).position") as String) shouldBe "sticky"
+            (page.evaluate("() => getComputedStyle(document.querySelector('.browse-layout')).gridTemplateColumns.split(' ').length === 2") as Boolean) shouldBe true
         }
         runVisualScenario(browser, "browse-640", width = 640) { page ->
             VisualTestRuntime.loginAsDummy(page, baseUrl)
@@ -124,6 +144,11 @@ class PlaywrightVisualRegressionTest {
             page.waitForSelector(".art-card")
             (page.evaluate("() => getComputedStyle(document.querySelector('.art-layout')).paddingTop") as String) shouldBe "12px"
             (page.evaluate("() => getComputedStyle(document.querySelector('.art-card')).paddingTop") as String) shouldBe "12.8px"
+            (page.evaluate("() => getComputedStyle(document.querySelector('.comments')).paddingTop") as String) shouldBe "12.8px"
+            page.setViewportSize(701, 900)
+            (page.evaluate("() => getComputedStyle(document.querySelector('.art-layout')).paddingTop") as String) shouldBe "16px"
+            (page.evaluate("() => getComputedStyle(document.querySelector('.art-card')).paddingTop") as String) shouldBe "16px"
+            (page.evaluate("() => getComputedStyle(document.querySelector('.comments')).paddingTop") as String) shouldBe "16px"
         }
     }
 

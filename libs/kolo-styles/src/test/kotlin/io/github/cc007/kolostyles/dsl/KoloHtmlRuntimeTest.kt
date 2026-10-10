@@ -25,6 +25,48 @@ import kotlin.test.Test
 class KoloHtmlRuntimeTest {
 
     @Test
+    fun `named font families record canonical tokens in base and variant scopes`() {
+        val html = renderKoloHtml(version = "fonts") {
+            head { koloStylesheetLink() }
+            body {
+                div {
+                    kolo {
+                        fontFamily(FontFamily("display"))
+                        hover.fontFamily(FontFamily("display"))
+                    }
+                }
+            }
+        }
+        val document = Jsoup.parse(html)
+
+        document.selectFirst("div")!!.classNames() shouldBe setOf("k-font-display", "k-hover:font-display")
+        document.selectFirst("link")!!.attr("href") shouldBe
+            "/css/generated/kolo.css?version=fonts&kolo=" +
+            URLEncoder.encode(canonicalizeKoloTokens(listOf("font-display", "hover:font-display")), UTF_8)
+    }
+
+    @Test
+    fun `named font weights record canonical tokens in base and variant scopes`() {
+        val html = renderKoloHtml(version = "weights") {
+            head { koloStylesheetLink() }
+            body {
+                div {
+                    kolo {
+                        fontWeight(FontWeight("book"))
+                        hover.fontWeight(FontWeight("950"))
+                    }
+                }
+            }
+        }
+        val document = Jsoup.parse(html)
+
+        document.selectFirst("div")!!.classNames() shouldBe setOf("k-font-book", "k-hover:font-950")
+        document.selectFirst("link")!!.attr("href") shouldBe
+            "/css/generated/kolo.css?version=weights&kolo=" +
+            URLEncoder.encode(canonicalizeKoloTokens(listOf("font-book", "hover:font-950")), UTF_8)
+    }
+
+    @Test
     fun `stylesheet link outside render context uses the standalone build property`() {
         val previous = System.getProperty("kolo.build.sha")
         System.setProperty("kolo.build.sha", "library-build")

@@ -11,6 +11,12 @@ private fun KoloVariantScope.recordFont(token: String) {
     recordBase(token)
 }
 
+fun KoloScope.fontFamily(family: FontFamily) = recordFont("font-${family.name}")
+fun KoloVariantScope.fontFamily(family: FontFamily) = recordFont("font-${family.name}")
+
+fun KoloScope.fontWeight(weight: FontWeight) = recordFont("font-${weight.name}")
+fun KoloVariantScope.fontWeight(weight: FontWeight) = recordFont("font-${weight.name}")
+
 val KoloScope.fontSans: Unit get() = recordFont("font-sans")
 val KoloScope.fontSerif: Unit get() = recordFont("font-serif")
 val KoloScope.fontMono: Unit get() = recordFont("font-mono")

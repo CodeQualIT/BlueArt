@@ -43,6 +43,13 @@ Baseline refresh (developer approval required):
 - `-PvisualBaselineApprover` is mandatory for baseline updates.
 - Approval strings that identify AI/Copilot are rejected by the visual baseline task.
 
+## Deterministic GIF Rendering
+The headless test context intercepts `.gif` requests (including query strings), decodes frame zero with ImageIO, and fulfills the original URL with a static PNG. Decoded frames are reused by URL for the test process to avoid repeated downloads and upstream rate limits. Fetch and decoding failures fail the scenario explicitly.
+
+This substitution exists only in `VisualTestRuntime`; application assets and normal browser GIF playback are unchanged. CSS animation disabling does not control GIF playback. `gifFrameRemainsStable` checks loaded image pixels across a one-second interval in both Chromium and Firefox.
+
+Responsive assertions cover both sides of the 960px browse and 700px art boundaries. Page-owned exceptions use selectors that outrank the later Kolo base utilities without altering desktop behavior.
+
 ## Visual Failure Triage
 When `visualTest` fails, inspect expected/actual/diff artifacts under:
 
@@ -67,7 +74,9 @@ Files:
 - `KoloHtmlRuntimeTest` validates BA-022 render-side plumbing: full HTML content assertions (not spot-checks) across all test cases, canonical token deduplication and variant-aware ordering, placeholder href finalization to `/css/generated/kolo.css`, per-element class scoping via the class-name mapper, multi-element overlap/deduplication, and no-op behaviour outside a kolo render context. Tests call `KoloScope.variant()` / `KoloScope.recordBase()` and `KoloVariantScope.variant()` / `KoloVariantScope.recordBase()` directly (no test-only adapter helpers).
 - `DisplayUtilitiesTest` validates display utility parsing/generation coverage: full allow-list acceptance, unknown/malformed token diagnostics, pseudo/media variant rule generation, and mixed spacing+display compiler output order.
 - `LayoutUtilitiesTest` validates non-display layout utility parsing/generation coverage (box-sizing, overflow, position, offsets, z-index, object-fit), including `z-auto`, representative positive-integer `z-<n>` values, pseudo/media variants, and mixed spacing+layout+display+font+sizing compiler output order.
-- `FontUtilitiesTest` validates font utility parsing/generation coverage: full family/size/weight allow-list acceptance, explicit rejection of custom weights, pseudo/media variant rule generation, and mixed spacing+display+font compiler output order.
+- `FontUtilitiesTest` validates named sizes, effective-theme family/weight lookup, contributed fonts and custom weights (including explicitly registered numeric names), typography overrides, missing-property diagnostics, rejection of ambiguous family/weight names and metadata utilities, typed variable-only generation, baseline companion line-height retention and deduplication, variants, and mixed compiler ordering.
+- `KoloTypographyStartupTest` proves ambiguous contributed family/weight names fail actual auto-configured Spring startup.
+- Baseline companion line-heights intentionally change art-page `textBase` heading spacing. The art-detail snapshots in Chromium and Firefox require manual review; their baselines are left unchanged. Other visual cases remain unchanged.
 - `SizingUtilitiesTest` validates sizing utility parsing/generation coverage across `w-*`, `h-*`, `min-w-*`, `max-w-*`, `min-h-*`, `max-h-*`, and `size-*`, including allow-list acceptance/rejection, pseudo/media variants, and `size-*` dual width+height emission.
 - `KoloCssControllerTest` validates mixed spacing+display `/css/generated/kolo.css` generation when both hook families are wired, alongside unsupported/unparsed diagnostics behavior.
 - `KoloCssControllerTest` also validates mixed spacing+display+font `/css/generated/kolo.css` generation when all hook families are wired.
@@ -84,6 +93,11 @@ Files:
 - `RichTextFacetRendererTest` validates mention/tag rich-text anchors emit semibold typography through co-located Kolo font utilities in render context.
 - `PlaywrightVisualRegressionTest` in `:visual-tests` validates login, browse timeline card rendering, and art detail rendering in headless Chromium and Firefox against committed per-browser snapshots.
 - `ResponsiveVariantsTest`, `KoloCssControllerTest`, and `KoloHtmlRuntimeTest` validate max-width parser acceptance, exclusive media output, unsupported maximum-variant diagnostics, and DSL token collection; `CssControllerTest` and Playwright boundary assertions retain the 640px, 700px, and 960px page-CSS exceptions.
+- `KoloThemeTest` validates the self-contained pinned baseline against an independent test-only inventory, including unique properties, representative family values, legitimate `initial` settings, emission order, keyframe associations, contribution precedence, conflict diagnostics, validation, and immutable request-time metadata.
+- `KoloCssCompilerTest`, `FontUtilitiesTest`, and `KoloCssControllerTest` validate on-demand theme root ordering/deduplication, keyframe-once emission, empty/unsupported requests, and canonical variable-only font-family generation.
+- `BlueArtApplicationTests` validates startup composition of the BlueArt semantic overlay; `CssControllerTest` retains page-owned palette and composite declarations as explicit exceptions while Kolo color utilities do not yet exist.
+- `BlueArtApplicationTests` also verifies that the auto-configured font parser sees contributed families and size/weight overrides. `KoloHtmlRuntimeTest` covers typed custom-family token delivery in base and variant scopes.
+- `DummyLoginFlowTest` validates browse/art body font classes and coexistence of page styles with live Kolo CSS containing the exact BlueArt font overlay; `CssControllerTest` checks legacy font aliases are absent.
 
 ## Suggested Additions
 - Lightweight integration tests for `GET /browse` and `GET /art/{cid}` rendering expectations.

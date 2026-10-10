@@ -72,7 +72,7 @@ Typed layout DSL helpers available on both `KoloScope` and `KoloVariantScope` vi
 - object-fit (`objectContain`, `objectCover`, `objectFill`, `objectNone`, `objectScaleDown`)
 
 ### Font Utilities
-Typed typography DSL helpers available on both `KoloScope` and `KoloVariantScope` via `FontDsl.kt`, covering Tailwind-compatible family (`font-sans`, `font-serif`, `font-mono`), size (`text-xs` … `text-9xl`), and weight (`font-thin` … `font-black`) tokens.
+Typed typography DSL helpers available on both `KoloScope` and `KoloVariantScope` via `FontDsl.kt`, covering heavily Tailwind-inspired family, size (`text-xs` … `text-9xl`), and weight tokens. Existing family helpers cover sans/serif/mono; `fontFamily(FontFamily("display"))` names a contributed `--k-font-display` entry. Existing weight helpers cover thin through black; `fontWeight(FontWeight("book"))` names a contributed `--k-font-weight-book` entry, and numeric names require explicit registration. Family names exclude reserved standard weight names and metadata suffixes; eligible family/weight collisions fail startup. Size utilities include their baseline-defined theme companion line-height. All font utility values come from the effective theme.
 
 ### Sizing Utilities
 Typed sizing DSL helpers available on both `KoloScope` and `KoloVariantScope` via `SizingDsl.kt`, covering width/height/min/max utility families (`w-*`, `h-*`, `min-w-*`, `max-w-*`, `min-h-*`, `max-h-*`, and `size-*`) with allow-listed named, numeric, breakpoint, and fractional tokens.
@@ -100,6 +100,21 @@ Spring `@Component` implementations that provide sizing token parsing (`StylePar
 
 ### Responsive Variant
 A typed Kolo scope that qualifies a utility by viewport range. `sm`, `md`, `lg`, `xl`, and `x2l` generate `width >=` queries at 40rem, 48rem, 64rem, 80rem, and 96rem; `maxSm` through `max2xl` generate exclusive `width <` queries at those thresholds. State scopes are `hover`, `focus`, `focusVisible`, `active`, and `visited`.
+
+### Effective Kolo Theme
+The immutable startup-composed theme used by Kolo generators. It contains the generic version-pinned `--k-*` baseline plus ordered consumer contributions; it is not discovered or changed during a CSS request.
+
+### Theme Contribution
+An application/library-owned, identified and precedence-ordered set of theme entries and optional keyframes. Equal-precedence conflicting values are startup errors.
+
+### Theme Property Collector
+The per-compilation collector used by a supported generator to request an exact effective-theme property. It produces one deterministic minimal `:root` block before utility rules, and emits an associated keyframe only once.
+
+### BlueArt Semantic Theme Role
+An application-owned `--k-color-blueart-*` entry describing a visual purpose rather than a raw color. Current roles map page background `#c2dff5`, surfaces `#d4eaf9`/`#dff1fe`, author surface `#eaf6ff`, border `#93b9d9`, primary/action `#0f85fe`, accent `#0a62a8`, banner `#0a5fa8`, body text `#0e2333`, muted text `#3d6680`, link/hashtag `#085898`, banner foreground `#f2f8ff`, and action foreground `#eef6ff`.
+
+### Bounded Alias Migration
+Page CSS may define a legacy-property alias only while a matching Kolo utility guarantees canonical property emission. Kolo never emits legacy aliases, and aliases are removed once no generated page stylesheet references them.
 
 ### `kolo-exception`
 An inline page-CSS marker for behavior that Kolo cannot represent without changing semantics. The browse 640px and 960px rules and art 700px rules remain exceptions because their inclusive or application-specific breakpoints do not equal a named exclusive Kolo range.

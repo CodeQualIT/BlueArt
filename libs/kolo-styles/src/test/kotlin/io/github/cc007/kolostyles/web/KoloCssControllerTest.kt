@@ -14,6 +14,7 @@ import io.github.cc007.kolostyles.compiler.sizing.SizingParserHook
 import io.github.cc007.kolostyles.compiler.spacing.SpacingGeneratorHook
 import io.github.cc007.kolostyles.compiler.spacing.SpacingParserHook
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.springframework.http.HttpStatus
 import kotlin.test.Test
 
@@ -136,6 +137,10 @@ class KoloCssControllerTest {
         response.statusCode shouldBe HttpStatus.OK
         response.body shouldBe
             """
+            :root {
+            --k-font-weight-semibold: 600;
+            }
+
             @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
@@ -145,7 +150,7 @@ class KoloCssControllerTest {
             margin-top: 0.5rem;
             }
             .k-font-semibold {
-            font-weight: 600;
+            font-weight: var(--k-font-weight-semibold);
             }
             .k-hover\:inline-flex:hover {
             display: inline-flex;
@@ -174,6 +179,22 @@ class KoloCssControllerTest {
     }
 
     @Test
+    fun `kolo stylesheet emits only the requested canonical font theme property`() {
+        val response = defaultController.koloStylesheet(
+            version = "abc123",
+            kolo = "font-sans",
+        )
+
+        response.statusCode shouldBe HttpStatus.OK
+        response.body!!.also { stylesheet ->
+            stylesheet shouldContain "--k-font-sans: ui-sans-serif, system-ui, sans-serif"
+            stylesheet shouldContain ".k-font-sans {\nfont-family: var(--k-font-sans);"
+            stylesheet.split("--k-font-sans:").size - 1 shouldBe 1
+            stylesheet.contains("--k-font-serif:") shouldBe false
+        }
+    }
+
+    @Test
     fun `kolo stylesheet compiles mixed maximum-width variants and diagnoses unknown variants`() {
         val response = defaultController.koloStylesheet(
             version = "abc123",
@@ -183,6 +204,10 @@ class KoloCssControllerTest {
         response.statusCode shouldBe HttpStatus.OK
         response.body shouldBe
             """
+            :root {
+            --k-font-weight-bold: 700;
+            }
+
             @media (width < 40rem) {
             .k-max-sm\:p-4 {
             padding: 1.0rem;
@@ -203,7 +228,7 @@ class KoloCssControllerTest {
             }
             @media (width < 80rem) {
             .k-max-xl\:font-bold {
-            font-weight: bold;
+            font-weight: var(--k-font-weight-bold);
             }
             }
             @media (width < 96rem) {

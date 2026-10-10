@@ -3,46 +3,39 @@ package io.github.cc007.kolostyles.compiler.font
 import io.github.cc007.kolostyles.compiler.StyleParserHook
 import io.github.cc007.kolostyles.compiler.Token
 import io.github.cc007.kolostyles.compiler.parseKoloVariants
-import kotlinx.css.FontWeight
-import kotlinx.css.rem
+import io.github.cc007.kolostyles.dsl.font.FontFamily
+import io.github.cc007.kolostyles.dsl.font.FontWeight
+import io.github.cc007.kolostyles.theme.EffectiveKoloTheme
+import io.github.cc007.kolostyles.theme.KoloDefaultTheme
 import org.springframework.stereotype.Component
 
-private val FONT_FAMILY_VALUES: Map<String, String> = linkedMapOf(
-    "font-sans" to "var(--font-sans)",
-    "font-serif" to "var(--font-serif)",
-    "font-mono" to "var(--font-mono)",
-)
-
-private val FONT_SIZE_VALUES = linkedMapOf(
-    "text-xs" to 0.75.rem,
-    "text-sm" to 0.875.rem,
-    "text-base" to 1.rem,
-    "text-lg" to 1.125.rem,
-    "text-xl" to 1.25.rem,
-    "text-2xl" to 1.5.rem,
-    "text-3xl" to 1.875.rem,
-    "text-4xl" to 2.25.rem,
-    "text-5xl" to 3.rem,
-    "text-6xl" to 3.75.rem,
-    "text-7xl" to 4.5.rem,
-    "text-8xl" to 6.rem,
-    "text-9xl" to 8.rem,
-)
-
-private val FONT_WEIGHT_VALUES = linkedMapOf(
-    "font-thin" to FontWeight.w100,
-    "font-extralight" to FontWeight.w200,
-    "font-light" to FontWeight.w300,
-    "font-normal" to FontWeight.normal,
-    "font-medium" to FontWeight.w500,
-    "font-semibold" to FontWeight.w600,
-    "font-bold" to FontWeight.bold,
-    "font-extrabold" to FontWeight.w800,
-    "font-black" to FontWeight.w900,
-)
+private val FONT_SIZE_PROPERTIES = listOf(
+    "xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl", "7xl", "8xl", "9xl",
+).associate { "text-$it" to "--k-text-$it" }
 
 @Component
-class FontParserHook : StyleParserHook {
+class FontParserHook(
+    effectiveTheme: EffectiveKoloTheme = KoloDefaultTheme.baseline(),
+) : StyleParserHook {
+    private val availableProperties = effectiveTheme.entries.map { it.property }.toSet()
+    private val fontWeightProperties = effectiveTheme.entries
+        .filter { it.property.startsWith("--k-font-weight-") }
+        .map { it.property.removePrefix("--k-font-weight-") }
+        .filter(FontWeight::isValidName)
+        .associate { "font-$it" to "--k-font-weight-$it" }
+    private val fontFamilyProperties = effectiveTheme.entries
+        .filter { it.property.startsWith("--k-font-") }
+        .map { it.property.removePrefix("--k-font-") }
+        .filter(FontFamily::isValidName)
+        .associate { "font-$it" to "--k-font-$it" }
+
+    init {
+        val ambiguousUtilities = fontFamilyProperties.keys.intersect(fontWeightProperties.keys)
+        require(ambiguousUtilities.isEmpty()) {
+            "Ambiguous font-family and font-weight theme utilities: ${ambiguousUtilities.joinToString()}"
+        }
+    }
+
     override fun parse(token: String): Token? {
         val parts = token.split(':')
         if (parts.any { it.isBlank() }) {
@@ -53,33 +46,33 @@ class FontParserHook : StyleParserHook {
         val variants = parts.dropLast(1)
         val parsedVariants = parseKoloVariants(variants) ?: return null
 
-        FONT_FAMILY_VALUES[utility]?.let { fontFamily ->
+        fontFamilyProperties[utility]?.let { themeProperty ->
             return FontFamilyToken(
                 raw = token,
                 stateVariants = parsedVariants.stateVariants,
                 mediaVariant = parsedVariants.mediaVariant,
                 utility = utility,
-                fontFamilyValue = fontFamily,
+                themeProperty = themeProperty,
             )
         }
 
-        FONT_SIZE_VALUES[utility]?.let { fontSize ->
+        FONT_SIZE_PROPERTIES[utility]?.takeIf { it in availableProperties }?.let { themeProperty ->
             return FontSizeToken(
                 raw = token,
                 stateVariants = parsedVariants.stateVariants,
                 mediaVariant = parsedVariants.mediaVariant,
                 utility = utility,
-                fontSizeValue = fontSize,
+                themeProperty = themeProperty,
             )
         }
 
-        FONT_WEIGHT_VALUES[utility]?.let { fontWeight ->
+        fontWeightProperties[utility]?.let { themeProperty ->
             return FontWeightToken(
                 raw = token,
                 stateVariants = parsedVariants.stateVariants,
                 mediaVariant = parsedVariants.mediaVariant,
                 utility = utility,
-                fontWeightValue = fontWeight,
+                themeProperty = themeProperty,
             )
         }
 

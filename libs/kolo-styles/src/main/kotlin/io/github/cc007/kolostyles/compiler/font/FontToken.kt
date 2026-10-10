@@ -2,13 +2,12 @@ package io.github.cc007.kolostyles.compiler.font
 
 import io.github.cc007.kolostyles.compiler.MediaVariant
 import io.github.cc007.kolostyles.compiler.Token
-import kotlinx.css.FontWeight
-import kotlinx.css.LinearDimension
 
 internal sealed interface FontToken : Token {
     val stateVariants: List<String>
     val mediaVariant: MediaVariant?
     val utility: String
+    val themeProperty: String
 }
 
 internal data class FontFamilyToken(
@@ -16,7 +15,7 @@ internal data class FontFamilyToken(
     override val stateVariants: List<String>,
     override val mediaVariant: MediaVariant?,
     override val utility: String,
-    val fontFamilyValue: String,
+    override val themeProperty: String,
 ) : FontToken
 
 internal data class FontSizeToken(
@@ -24,13 +23,13 @@ internal data class FontSizeToken(
     override val stateVariants: List<String>,
     override val mediaVariant: MediaVariant?,
     override val utility: String,
-    val fontSizeValue: LinearDimension,
+    override val themeProperty: String,
 ) : FontToken
 
 internal data class FontWeightToken(
     override val raw: String,
     override val stateVariants: List<String>,
     override val mediaVariant: MediaVariant?,
-    override     val utility: String,
-    val fontWeightValue: FontWeight,
+    override val utility: String,
+    override val themeProperty: String,
 ) : FontToken

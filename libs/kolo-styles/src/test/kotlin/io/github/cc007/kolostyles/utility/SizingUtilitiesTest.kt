@@ -146,6 +146,10 @@ class SizingUtilitiesTest {
         val css = mixedCompiler.compile("md:grid;w-full;mt-2;font-semibold;size-1/2")
         css shouldBe
             """
+            :root {
+            --k-font-weight-semibold: 600;
+            }
+
             @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
@@ -158,7 +162,7 @@ class SizingUtilitiesTest {
             margin-top: 0.5rem;
             }
             .k-font-semibold {
-            font-weight: 600;
+            font-weight: var(--k-font-weight-semibold);
             }
             .k-size-1/2 {
             width: calc(1/2 * 100%);

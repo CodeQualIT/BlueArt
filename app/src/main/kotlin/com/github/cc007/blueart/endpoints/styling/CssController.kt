@@ -18,7 +18,9 @@ class CssController {
 
 
     private fun CssBuilder.buildBrowseStyles() {
+        // kolo-exception: palette composites remain page-owned until typed color/effect utilities can request them.
         root {
+            // kolo-exception: color utilities are not implemented yet, so page CSS retains this palette.
             varDef("bg", "#c2dff5")
             varDef("surface", "#d4eaf9")
             varDef("surface-2", "#dff1fe")
@@ -31,7 +33,6 @@ class CssController {
             varDef("primary-2", "#3ca0ff")
             varDef("accent", "#0a62a8")
             varDef("hashtag", "#085898")
-            defineFontVariables()
         }
 
         universal {
@@ -269,8 +270,9 @@ class CssController {
             ".browse-layout" {
                 raw("grid-template-columns", "1fr")
             }
-            ".browse-sidebar" {
+            ".browse-sidebar.k-sticky" {
                 // kolo-exception: `static` has utility parity, but no Kolo variant preserves the 960px boundary.
+                // Outrank the later Kolo base utility only inside this responsive exception.
                 position = Position.static
             }
         }
@@ -284,7 +286,9 @@ class CssController {
     }
 
     private fun CssBuilder.buildArtStyles() {
+        // kolo-exception: palette composites remain page-owned until typed color/effect utilities can request them.
         root {
+            // kolo-exception: color utilities are not implemented yet, so page CSS retains this palette.
             varDef("bg", "#c2dff5")
             varDef("surface", "#d4eaf9")
             varDef("surface-2", "#dff1fe")
@@ -293,7 +297,6 @@ class CssController {
             varDef("muted", "#3d6680")
             varDef("accent", "#0a62a8")
             varDef("hashtag", "#085898")
-            defineFontVariables()
         }
 
         universal {
@@ -397,10 +400,10 @@ class CssController {
 
         // kolo-exception: padding utilities exist, but no named Kolo variant preserves the 700px boundary.
         media("(max-width: 700px)") {
-            ".art-layout" {
+            ".art-layout.k-p-4" {
                 padding = Padding(0.75.rem)
             }
-            ".art-card, .comments" {
+            ".art-card.k-p-4, .comments.k-p-4" {
                 padding = Padding(0.8.rem)
             }
         }
@@ -408,13 +411,6 @@ class CssController {
 
     private fun CssBuilder.varDef(name: String, value: String) {
         put("--$name", value)
-    }
-
-    private fun CssBuilder.defineFontVariables() {
-        /* Todo: set default values to TailwindCSS defaults, but set font-serif to "Inter, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif" for BlueArt specifically */
-        varDef("font-sans", "Inter, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif")
-        varDef("font-serif", "ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif")
-        varDef("font-mono", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace")
     }
 
     private fun CssBuilder.raw(name: String, value: String) {

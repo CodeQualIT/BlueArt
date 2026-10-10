@@ -2,14 +2,15 @@ package io.github.cc007.kolostyles.compiler.font
 
 import io.github.cc007.kolostyles.compiler.StyleGeneratorHook
 import io.github.cc007.kolostyles.compiler.Token
-import kotlinx.css.CssBuilder
-import kotlinx.css.fontFamily
-import kotlinx.css.fontSize
-import kotlinx.css.fontWeight
+import io.github.cc007.kolostyles.theme.ThemePropertyCollector
+import kotlinx.css.*
+import kotlinx.css.properties.LineHeight
 import org.springframework.stereotype.Component
 
 @Component
-class FontGeneratorHook : StyleGeneratorHook {
+class FontGeneratorHook(
+    private val themePropertyCollector: ThemePropertyCollector = ThemePropertyCollector(),
+) : StyleGeneratorHook {
     override fun generate(token: Token, builder: CssBuilder): Boolean {
         if (token !is FontToken) return false
         return builder.emitVariantRule(
@@ -21,12 +22,15 @@ class FontGeneratorHook : StyleGeneratorHook {
     }
 
     private fun buildFontDeclaration(token: FontToken): CssBuilder.() -> Unit = {
+        themePropertyCollector.request(token.themeProperty)
         when (token) {
-            is FontFamilyToken -> fontFamily = token.fontFamilyValue
-            is FontWeightToken -> fontWeight = token.fontWeightValue
+            is FontFamilyToken -> fontFamily = "var(${token.themeProperty})"
+            is FontWeightToken -> fontWeight = FontWeight("var(${token.themeProperty})")
             is FontSizeToken -> {
-                // TODO: Add line-height, like in TailwindCSS
-                fontSize = token.fontSizeValue
+                fontSize = LinearDimension("var(${token.themeProperty})")
+                val lineHeightProperty = "${token.themeProperty}--line-height"
+                themePropertyCollector.request(lineHeightProperty)
+                lineHeight = LineHeight("var($lineHeightProperty)")
             }
         }
     }

@@ -164,6 +164,10 @@ class LayoutUtilitiesTest {
         val css = mixedCompiler.compile("md:grid;overflow-hidden;mt-2;font-semibold;size-full;sticky;top-0;z-10;object-cover")
         css shouldBe
             """
+            :root {
+            --k-font-weight-semibold: 600;
+            }
+
             @media (width >= 48rem) {
             .k-md\:grid {
             display: grid;
@@ -176,7 +180,7 @@ class LayoutUtilitiesTest {
             margin-top: 0.5rem;
             }
             .k-font-semibold {
-            font-weight: 600;
+            font-weight: var(--k-font-weight-semibold);
             }
             .k-size-full {
             width: 100%;

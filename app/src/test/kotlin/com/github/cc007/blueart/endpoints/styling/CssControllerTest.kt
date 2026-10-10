@@ -12,6 +12,15 @@ class CssControllerTest {
     private val controller = CssController()
 
     @Test
+    fun `page styles no longer declare or reference legacy font aliases`() {
+        listOf(controller.browseStylesheet(), controller.artStylesheet()).forEach { css ->
+            listOf("--font-sans", "--font-serif", "--font-mono").forEach { property ->
+                css shouldNotContain property
+            }
+        }
+    }
+
+    @Test
     fun `browse stylesheet encodes all browse css rules in generated output`() {
         val css = controller.browseStylesheet()
         val legacyCss = readResource("/static/css/browse.css")
@@ -30,7 +39,7 @@ class CssControllerTest {
         val legacyCss = readResource("/static/css/art.css")
 
         css shouldNotContain "@import"
-        assertContainsAllRuleHeaders(legacyCss, css)
+        assertContainsAllRuleHeaders(legacyCss, css, ignoredLegacyHeaders = setOf(".art-layout"))
     }
 
     @Test
@@ -107,6 +116,20 @@ class CssControllerTest {
     }
 
     @Test
+    fun `page styles retain palette ownership until a color utility requests canonical properties`() {
+        val browseCss = controller.browseStylesheet()
+        val artCss = controller.artStylesheet()
+
+        browseCss shouldContain "--bg: #c2dff5;"
+        browseCss shouldContain "radial-gradient(circle at top, #d8effe 0%, var(--bg) 48%)"
+        browseCss shouldContain "rgba(17, 133, 254, 0.14)"
+        artCss shouldContain "--bg: #c2dff5;"
+        artCss shouldContain "linear-gradient(180deg, var(--surface-2), var(--surface))"
+        browseCss shouldNotContain "--k-color-blueart-page-background:"
+        artCss shouldNotContain "--k-color-blueart-page-background:"
+    }
+
+    @Test
     fun `browse stylesheet omits sizing declarations for migrated selectors`() {
         val css = controller.browseStylesheet()
         listOf(
@@ -172,7 +195,7 @@ class CssControllerTest {
     fun `stylesheets retain non migrated layout exceptions`() {
         val browseCss = controller.browseStylesheet()
         val artCss = controller.artStylesheet()
-        val browseMerged = findSelectorDeclarations(browseCss, ".browse-sidebar", allowMissing = true).joinToString("\n")
+        val browseMerged = findSelectorDeclarations(browseCss, ".browse-sidebar.k-sticky").joinToString("\n")
         val browseUniversal = findSelectorDeclarations(browseCss, "*", allowMissing = true).joinToString("\n")
         val artUniversal = findSelectorDeclarations(artCss, "*", allowMissing = true).joinToString("\n")
         val clampedText = findSelectorDeclarations(browseCss, ".post-card-text-only .post-text", allowMissing = true).joinToString("\n")
@@ -196,6 +219,9 @@ class CssControllerTest {
         browseCss shouldContain "align-items: flex-start;"
 
         artCss shouldContain "@media (max-width: 700px)"
+        artCss shouldContain ".art-layout.k-p-4 {"
+        assertSelectorContainsDeclaration(artCss, ".art-card.k-p-4", "padding: 0.8rem;")
+        assertSelectorContainsDeclaration(artCss, ".comments.k-p-4", "padding: 0.8rem;")
         artCss shouldContain "padding: 0.75rem;"
         artCss shouldContain "padding: 0.8rem;"
     }

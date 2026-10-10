@@ -1,7 +1,13 @@
 package io.github.cc007.kolostyles.compiler
 
+import io.github.cc007.kolostyles.theme.EffectiveKoloTheme
+import io.github.cc007.kolostyles.theme.ThemeEntry
+import io.github.cc007.kolostyles.theme.ThemeKeyframe
+import io.github.cc007.kolostyles.theme.ThemePropertyCollector
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import kotlin.test.Test
 
 class KoloCssCompilerTest {
@@ -169,13 +175,56 @@ class KoloCssCompilerTest {
 
         val result = compiler.compile("mt-2")
 
-        result shouldBe
+        result.trimEnd() shouldBe
             """
             :root {
             --kolo-unsupported-0: "mt-2";
             }
-            
             """.trimIndent()
+    }
+
+    @Test
+    fun `compile emits requested properties once in effective theme order before utility rules and keyframes`() {
+        val collector = ThemePropertyCollector()
+        val parser = StyleParserHook { raw -> TestToken(raw) }
+        val generator = StyleGeneratorHook { token, builder ->
+            val property = when (token.raw) {
+                "first", "again" -> "--k-font-sans"
+                "animated" -> "--k-animate-spin"
+                else -> return@StyleGeneratorHook false
+            }
+            collector.request(property)
+            builder.apply { ".k-${token.raw}" { put("value", "var($property)") } }
+            true
+        }
+        val compiler = KoloCssCompiler(
+            parserHooks = listOf(parser),
+            generatorHooks = listOf(generator),
+            effectiveTheme = EffectiveKoloTheme(
+                listOf(
+                    ThemeEntry("--k-font-sans", "overlay"),
+                    ThemeEntry("--k-animate-spin", "spin 1s linear", "spin"),
+                ),
+                listOf(ThemeKeyframe("spin", "@keyframes spin { to { opacity: 1; } }")),
+            ),
+            themePropertyCollector = collector,
+        )
+
+        val css = compiler.compile("animated;again;first;animated")
+
+        css.indexOf("--k-font-sans: overlay;") shouldBeLessThan css.indexOf("--k-animate-spin: spin 1s linear;")
+        css.indexOf(":root") shouldBeLessThan css.indexOf(".k-animated")
+        css.countOccurrences("@keyframes spin") shouldBe 1
+        css.countOccurrences("--k-font-sans:") shouldBe 1
+    }
+
+    @Test
+    fun `compile has no theme root for empty unsupported or non theme requests`() {
+        KoloCssCompiler().compile(null) shouldBe ""
+        KoloCssCompiler().compile("unknown").also { css ->
+            css shouldContain "--kolo-unsupported-0"
+            css shouldNotContain "--k-font-sans"
+        }
     }
 
     @Test
@@ -196,4 +245,11 @@ class KoloCssCompilerTest {
     private data class TestToken(
         override val raw: String
     ) : Token
+
+    private infix fun Int.shouldBeLessThan(other: Int) {
+        check(this < other) { "$this was not less than $other" }
+    }
+
+    private fun String.countOccurrences(value: String): Int =
+        split(value).size - 1
 }

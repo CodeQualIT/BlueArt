@@ -2,6 +2,11 @@ package com.github.cc007.blueart.visual
 
 import com.microsoft.playwright.*
 import com.microsoft.playwright.options.LoadState
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.ConcurrentHashMap
+import java.util.regex.Pattern
+import javax.imageio.ImageIO
 
 enum class VisualBrowser(val id: String) {
     CHROMIUM("chromium"),
@@ -23,6 +28,7 @@ private object BrowserTypeOptionsFactory {
 object VisualTestRuntime {
     private const val VIEWPORT_WIDTH = 1366
     private const val VIEWPORT_HEIGHT = 900
+    private val gifFrames = ConcurrentHashMap<String, ByteArray>()
 
     fun newContext(
         browser: Browser,
@@ -35,6 +41,31 @@ object VisualTestRuntime {
                 .setLocale("en-US")
                 .setTimezoneId("UTC")
         )
+
+        // GIF playback is independent of CSS animations. Decode frame zero before
+        // the browser sees the response, without changing the application or its URLs.
+        context.route(Pattern.compile(".*\\.gif(?:\\?.*)?$", Pattern.CASE_INSENSITIVE)) { route ->
+            val png = gifFrames.computeIfAbsent(route.request().url()) {
+                val response = route.fetch()
+                try {
+                    check(response.ok()) { "GIF request failed: ${response.status()} ${response.url()}" }
+                    val frame = requireNotNull(ImageIO.read(ByteArrayInputStream(response.body()))) {
+                        "Cannot decode GIF: ${response.url()}"
+                    }
+                    ByteArrayOutputStream().use { output ->
+                        check(ImageIO.write(frame, "png", output)) { "PNG encoder is unavailable" }
+                        output.toByteArray()
+                    }
+                } finally {
+                    response.dispose()
+                }
+            }
+            route.fulfill(
+                Route.FulfillOptions()
+                    .setContentType("image/png")
+                    .setBodyBytes(png)
+            )
+        }
 
         context.addInitScript(
             """
@@ -76,17 +107,6 @@ object VisualTestRuntime {
                 }
                 """.trimIndent()
             )
-        )
-        freezeGifAnimations(page)
-    }
-
-    private fun freezeGifAnimations(page: Page) {
-        page.addInitScript(
-            """
-            document.querySelectorAll('img[src$=".gif"], img[src*=".gif?"]').forEach(el => {
-              el.style.animationPlayState = 'paused';
-            });
-            """.trimIndent()
         )
     }
 

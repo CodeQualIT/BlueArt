@@ -1,5 +1,8 @@
 package io.github.cc007.kolostyles.compiler
 
+import io.github.cc007.kolostyles.theme.EffectiveKoloTheme
+import io.github.cc007.kolostyles.theme.KoloDefaultTheme
+import io.github.cc007.kolostyles.theme.ThemePropertyCollector
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.css.CssBuilder
 import org.springframework.stereotype.Service
@@ -17,7 +20,9 @@ val logger = KotlinLogging.logger {}
 @Service
 class KoloCssCompiler(
     private val parserHooks: List<StyleParserHook> = emptyList(),
-    private val generatorHooks: List<StyleGeneratorHook> = emptyList()
+    private val generatorHooks: List<StyleGeneratorHook> = emptyList(),
+    private val effectiveTheme: EffectiveKoloTheme = KoloDefaultTheme.baseline(),
+    private val themePropertyCollector: ThemePropertyCollector = ThemePropertyCollector(),
 ) {
     init {
         logger.info { "Parser hooks loaded: ${parserHooks.map { it::class.simpleName }}" }
@@ -26,15 +31,30 @@ class KoloCssCompiler(
 
     fun compile(rawKolo: String?): String {
         val tokens = splitTokens(rawKolo)
-        val builder = CssBuilder()
-        tokens.forEachIndexed { index, token ->
-            if (isMalformedToken(token)) {
-                builder.appendDiagnostic("unparsed", index, token)
-            } else if (!generateViaHooks(token, builder)) {
-                builder.appendDiagnostic("unsupported", index, token)
+        val (builder, requestedProperties) = themePropertyCollector.collect {
+            CssBuilder().also { builder ->
+                tokens.forEachIndexed { index, token ->
+                    if (isMalformedToken(token)) {
+                        builder.appendDiagnostic("unparsed", index, token)
+                    } else if (!generateViaHooks(token, builder)) {
+                        builder.appendDiagnostic("unsupported", index, token)
+                    }
+                }
             }
         }
-        return builder.toString()
+        val requestedEntries = effectiveTheme.entries.filter { it.property in requestedProperties }
+        if (requestedEntries.isEmpty()) return builder.toString()
+
+        val rootBuilder = CssBuilder().apply {
+            root {
+                requestedEntries.forEach { entry -> put(entry.property, entry.value) }
+            }
+        }
+        val keyframes = requestedEntries.mapNotNull { it.keyframe }.distinct()
+            .joinToString(separator = "\n") { effectiveTheme.keyframe(it).css }
+        return listOf(rootBuilder.toString(), keyframes, builder.toString())
+            .filter(String::isNotBlank)
+            .joinToString(separator = "\n")
     }
 
     private fun generateViaHooks(token: String, builder: CssBuilder): Boolean {
