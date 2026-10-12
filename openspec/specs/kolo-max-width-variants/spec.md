@@ -2,6 +2,8 @@
 
 ## Purpose
 
+Define named, exclusive maximum-width responsive variants across Kolo utility families, including composition with state variants and typed DSL scopes, while preserving existing minimum-width behavior and deterministic diagnostics for unsupported variants.
+
 ## Requirements
 
 ### Requirement: Kolo supports named exclusive max-width responsive variants
